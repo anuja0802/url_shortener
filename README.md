@@ -6,7 +6,7 @@ A full-stack URL shortener built with Node.js, Express, MongoDB, and React. Supp
 
 ## Live Demo
 
-Frontend runs on **https://url-shortener-tiny.vercel.app/**
+**https://url-shortener-tiny.vercel.app/**
 
 ---
 
