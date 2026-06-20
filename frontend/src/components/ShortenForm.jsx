@@ -2,29 +2,22 @@ import { useState } from 'react';
 import { createUrl } from '../services/api';
 
 export default function ShortenForm({ onUrlCreated }) {
-  const [originalUrl, setOriginalUrl]   = useState('');
-  const [customAlias, setCustomAlias]   = useState('');
-  const [error, setError]               = useState('');
-  const [loading, setLoading]           = useState(false);
+  const [originalUrl, setOriginalUrl] = useState('');
+  const [customAlias, setCustomAlias] = useState('');
+  const [error, setError]             = useState('');
+  const [loading, setLoading]         = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (!originalUrl.trim()) {
-      setError('Please enter a URL');
-      return;
-    }
+    if (!originalUrl.trim()) { setError('Please enter a URL'); return; }
 
     setLoading(true);
     try {
       const payload = { originalUrl: originalUrl.trim() };
       if (customAlias.trim()) payload.customAlias = customAlias.trim();
-
       const res = await createUrl(payload);
       onUrlCreated(res.data.data);
-
-      // Reset form
       setOriginalUrl('');
       setCustomAlias('');
     } catch (err) {
@@ -34,55 +27,70 @@ export default function ShortenForm({ onUrlCreated }) {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">Shorten a URL</h2>
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 14px',
+    fontSize: 14,
+    border: '1px solid #e8e2d9',
+    borderRadius: 10,
+    outline: 'none',
+    background: '#fff',
+    color: '#1a1a1a',
+    boxSizing: 'border-box',
+  };
 
-      {/* URL input */}
-      <div className="mb-3">
-        <label className="block text-sm font-medium text-gray-600 mb-1">
-          Long URL <span className="text-red-400">*</span>
-        </label>
+  const labelStyle = {
+    display: 'block',
+    fontSize: 12,
+    fontWeight: 600,
+    color: '#888',
+    marginBottom: 5,
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e8e2d9', padding: '20px' }}>
+
+      {/* Long URL */}
+      <div style={{ marginBottom: 12 }}>
+        <label style={labelStyle}>Long URL</label>
         <input
+          style={inputStyle}
           type="text"
           value={originalUrl}
           onChange={(e) => setOriginalUrl(e.target.value)}
           placeholder="https://example.com/very/long/url"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition"
         />
       </div>
 
-      {/* Custom alias input */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-600 mb-1">
-          Custom alias <span className="text-gray-400 font-normal">(optional)</span>
-        </label>
-        <div className="flex items-center gap-0">
-          <span className="px-3 py-2.5 bg-gray-50 border border-r-0 border-gray-200 rounded-l-lg text-sm text-gray-400">
+      {/* Custom alias */}
+      <div style={{ marginBottom: 4 }}>
+        <label style={labelStyle}>Custom alias <span style={{ fontWeight: 400, color: '#bbb' }}>(optional)</span></label>
+        <div style={{ display: 'flex' }}>
+          <span style={{ padding: '10px 12px', background: '#f5f0e8', border: '1px solid #e8e2d9', borderRight: 'none', borderRadius: '10px 0 0 10px', fontSize: 13, color: '#aaa', whiteSpace: 'nowrap' }}>
             {import.meta.env.VITE_API_URL}/
           </span>
           <input
+            style={{ ...inputStyle, borderRadius: '0 10px 10px 0', width: 'auto', flex: 1 }}
             type="text"
             value={customAlias}
             onChange={(e) => setCustomAlias(e.target.value)}
             placeholder="my-link"
-            className="flex-1 px-4 py-2.5 rounded-r-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition"
           />
         </div>
       </div>
 
-      {/* Error message */}
+      {/* Error */}
       {error && (
-        <p className="text-sm text-red-500 mb-3 bg-red-50 px-3 py-2 rounded-lg">
+        <p style={{ fontSize: 13, color: '#c0392b', background: '#fff0f0', border: '1px solid #ffd5d5', borderRadius: 8, padding: '8px 12px', margin: '10px 0 0' }}>
           {error}
         </p>
       )}
 
-      {/* Submit button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-2.5 px-4 bg-violet-600 hover:bg-violet-700 disabled:bg-violet-300 text-white text-sm font-medium rounded-lg transition cursor-pointer disabled:cursor-not-allowed"
+        style={{ width: '100%', marginTop: 14, padding: '11px', background: loading ? '#b0abf0' : '#6c63ff', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer' }}
       >
         {loading ? 'Shortening...' : 'Shorten URL'}
       </button>

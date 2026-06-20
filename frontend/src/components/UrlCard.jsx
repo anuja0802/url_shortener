@@ -2,27 +2,25 @@ import { useState } from 'react';
 import { deleteUrl } from '../services/api';
 
 export default function UrlCard({ url, onDeleted }) {
-  const [copied, setCopied]   = useState(false);
+  const [copied, setCopied]     = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const shortUrl = `${import.meta.env.VITE_API_URL}/${url.customAlias || url.shortCode}`;
+  const truncate = (str, n) => str.length > n ? str.slice(0, n) + '...' : str;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(shortUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback for browsers that block clipboard API
-      const input = document.createElement('input');
-      input.value = shortUrl;
-      document.body.appendChild(input);
-      input.select();
+      const el = document.createElement('input');
+      el.value = shortUrl;
+      document.body.appendChild(el);
+      el.select();
       document.execCommand('copy');
-      document.body.removeChild(input);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      document.body.removeChild(el);
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDelete = async () => {
@@ -37,54 +35,43 @@ export default function UrlCard({ url, onDeleted }) {
     }
   };
 
-  // Truncate long URLs for display
-  const truncate = (str, n) => str.length > n ? str.slice(0, n) + '...' : str;
+  const openLink = () => {
+    window.open(shortUrl, '_blank', 'noopener,noreferrer');
+  };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+    <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e8e2d9', padding: '13px 16px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
 
-      {/* URL info */}
-      <div className="flex-1 min-w-0">
-        {/* Short URL */}
-        <a
-          href={shortUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-violet-600 font-medium text-sm hover:underline break-all"
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <span
+          onClick={openLink}
+          style={{ fontSize: 14, fontWeight: 600, color: '#6c63ff', cursor: 'pointer', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
         >
           {shortUrl}
-        </a>
-
-        {/* Original URL */}
-        <p className="text-gray-400 text-xs mt-0.5 break-all">
-          {truncate(url.originalUrl, 80)}
-        </p>
+        </span>
+        <span style={{ fontSize: 12, color: '#bbb', marginTop: 2, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {truncate(url.originalUrl, 60)}
+        </span>
       </div>
 
-      {/* Click count */}
-      <div className="flex items-center gap-1 text-sm text-gray-500 shrink-0">
-        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-        <span>{url.clicks} {url.clicks === 1 ? 'click' : 'clicks'}</span>
-      </div>
+      {/* Clicks */}
+      <span style={{ fontSize: 12, color: '#aaa', whiteSpace: 'nowrap', flexShrink: 0 }}>
+        {url.clicks} {url.clicks === 1 ? 'click' : 'clicks'}
+      </span>
 
-      {/* Actions */}
-      <div className="flex items-center gap-2 shrink-0">
-        {/* Copy button */}
+      {/* Buttons */}
+      <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
         <button
           onClick={handleCopy}
-          className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition text-gray-600 cursor-pointer"
+          style={{ padding: '5px 12px', fontSize: 12, fontWeight: 500, borderRadius: 7, border: '1px solid #e8e2d9', background: copied ? '#e8f8f2' : '#f5f0e8', color: copied ? '#0a7a52' : '#555', cursor: 'pointer' }}
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>
-
-        {/* Delete button */}
         <button
           onClick={handleDelete}
           disabled={deleting}
-          className="px-3 py-1.5 text-xs font-medium rounded-lg border border-red-100 hover:bg-red-50 transition text-red-500 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          style={{ padding: '5px 12px', fontSize: 12, fontWeight: 500, borderRadius: 7, border: '1px solid #ffd5d5', background: '#fff0f0', color: '#c0392b', cursor: deleting ? 'not-allowed' : 'pointer', opacity: deleting ? 0.5 : 1 }}
         >
           {deleting ? '...' : 'Delete'}
         </button>
