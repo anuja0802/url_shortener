@@ -267,7 +267,7 @@ See `.github/workflows/ci.yml` for the full pipeline.
 
 ## Deployment
 
-- **Backend** → [Render](https://render.com) or [Railway](https://railway.app)
+- **Backend** → [Render](https://render.com)
 - **Frontend** → [Vercel](https://vercel.com)
 
 Set all environment variables in your deployment platform's dashboard. Update `VITE_API_URL` to point to your deployed backend URL before building the frontend.
