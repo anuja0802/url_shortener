@@ -4,6 +4,12 @@ A full-stack URL shortener built with Node.js, Express, MongoDB, and React. Supp
 
 ---
 
+## Live Demo
+
+Frontend runs on **https://url-shortener-tiny.vercel.app/**
+
+---
+
 ## Tech Stack
 
 **Backend**
@@ -117,7 +123,7 @@ npm install
 npm run dev
 ```
 
-Backend runs on **http://localhost:5000**
+Backend runs on **https://url-shortener-8lzo.onrender.com**
 
 ### 3. Set up the frontend
 
@@ -128,7 +134,7 @@ npm install
 npm run dev
 ```
 
-Frontend runs on **http://localhost:5173**
+Frontend runs on **https://url-shortener-tiny.vercel.app/**
 
 ---
 
